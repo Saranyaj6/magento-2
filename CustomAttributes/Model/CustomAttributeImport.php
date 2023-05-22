@@ -16,8 +16,14 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Api\Data\ProductAttributeInterfaceFactory;
 
 
+
+
 class CustomAttributeImport
 {
+    /**
+     * @var ProductAttributeInterfaceFactory
+     */
+    private $productAttributeFactory;
 
     /**
      * @var AttributeInterfaceFactory
@@ -78,6 +84,7 @@ class CustomAttributeImport
         Config $eavConfig,
         Repository $repository,
         AttributeInterfaceFactory $attributeFactory,
+        ProductAttributeInterfaceFactory $productAttributeFactory
        
     ) {
         $this->attributeRepository = $attributeRepository;
@@ -90,6 +97,7 @@ class CustomAttributeImport
         $this->logger = $logger;
         $this->repository = $repository;
         $this->eavConfig = $eavConfig;
+        $this->productAttributeFactory = $productAttributeFactory;
         
     }
 
@@ -103,18 +111,17 @@ class CustomAttributeImport
 
         $attributeCode = $value['attribute_code'];
 
-
-        // try {
-        //    Create a new instance of the AttributeInterface
-                $attribute = $this->attributeFactory->create();        
-            // }
-            // catch (NoSuchEntityException $e){
-            //     $attribute = $this->attributeRepository->get( $entityTypeId, $attributeCode);
-            // }
-         
-
+        
+        try {
+            $attribute = $this->attributeRepository->get($entityTypeId, $attributeCode);
+        } catch (NoSuchEntityException $exception) {
+            $attribute = $this->attributeFactory->create();
+            $attribute->setAttributeCode($attributeCode);
+            $attribute->setEntityTypeId($entityTypeId);
+        }
+        
         // Set the necessary data for the attribute
-        $attribute->setAttributeCode($value['attribute_code']);
+        $attribute->setAttributeCode($attributeCode);
         $attribute->setAttributeSetName($value['attribute_set_name']);
         $attribute->setAttributeGroup($value['attribute_group']);
         $attribute->setFrontendLabel($value['label']);
@@ -153,8 +160,7 @@ class CustomAttributeImport
         $attribute->setUseProductImageForSwatch($value['use_product_image_for_swatch']);
         // Save the attribute to the database
         try {
-        // $this->repository->save($attribute);
-        $this->attributeRepository->save($attribute);
+            $this->attributeRepository->save($attribute);
 
     } catch (\Exception $e) {
         $this->logger->critical($e->getMessage());
@@ -185,7 +191,6 @@ public function deleteAttribute($attributeCode)
 
 
 }
-
 
 
 
