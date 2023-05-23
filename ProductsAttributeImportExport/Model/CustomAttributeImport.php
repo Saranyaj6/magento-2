@@ -77,17 +77,11 @@ class CustomAttributeImport
             $attribute->setEntityTypeId($entityTypeId);
         }
 
-        // Handle the 'label' attribute separately
-        if (isset($value['label'])) {
-            $attribute->setFrontendLabel($value['label']);
-            unset($value['label']);
-        }
 
         foreach ($value as $key => $data) {
             $attribute->setData($key, $data);
         }
 
-        // $attribute->setIsUserDefined(true);
 
         try {
             $this->attributeRepository->save($attribute);
@@ -103,6 +97,15 @@ class CustomAttributeImport
                 $attributeCode,
                 $sortOrder = null
             );
+
+            // Get the attribute ID
+            $attributeId = $attribute->getId();
+
+            // Update the attribute set and group
+            $attributeSetId = $value['attribute_set_id'];
+            $attributeGroupId = $value['attribute_group_id'];
+            $this->updateAttributeSet($attributeId, $attributeSetId, $attributeGroupId);
+
 
 
         } catch (\Exception $e) {
@@ -128,4 +131,25 @@ class CustomAttributeImport
         }
     }
 
+
+    public function updateAttributeSet($attributeId, $attributeSetId, $attributeGroupId)
+{
+    try {
+        $eavSetup = $this->eavSetupFactory->create();
+        $eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            $attributeId,
+            'attribute_set_id',
+            $attributeSetId
+        );
+        $eavSetup->updateAttribute(
+            \Magento\Catalog\Model\Product::ENTITY,
+            $attributeId,
+            'attribute_group_id',
+            $attributeGroupId
+        );
+    } catch (\Exception $e) {
+        $this->logger->error($e->getMessage());
+    }
+}
 }
