@@ -22,14 +22,9 @@ use Codilar\ProductsAttributeImportExport\Model\CustomAttributeImport;
  */
 class CustomAttributes extends AbstractEntity
 {
-    const ENTITY_CODE = 'productsattributeimportexport';
-    const ENTITY_ID_COLUMN = 'attribute_code';
-    const TABLE = 'custom_product_attribute';
-
-
-
-
-    
+    public const ENTITY_CODE = 'productsattributeimportexport';
+    public const ENTITY_ID_COLUMN = 'attribute_code';
+    public const TABLE = 'custom_product_attribute';
 
     /**
      * If we should check column names
@@ -56,42 +51,21 @@ class CustomAttributes extends AbstractEntity
      */
     protected $validColumnNames = [
         'attribute_code',
-        'attribute_set_name',
-        'attribute_group',
-        'frontend_input',
-        'frontend_class',
-        'is_required',
-        'default_value',
         'is_unique',
+        'scope',
+        'frontend_class',
+        'frontend_input',
+        'is_required',
+        'options',
+        'is_user_defined',
+        'frontend_label',
         'note',
-        'attribute_scope',
-        'is_visible',
-        'is_searchable',
-        'is_filterable',
-        'is_comparable',
-        'is_visible_on_front',
-        'is_html_allowed_on_front',
-        'is_used_for_price_rules',
-        'is_filterable_in_search',
-        'used_in_product_listing',
-        'used_for_sort_by',
-        'is_visible_in_advanced_search',
-        'position',
-        'is_wysiwyg_enabled',
-        'is_used_for_promo_rules',
-        'is_required_in_admin_store',
-        'is_used_in_grid',
-        'is_visible_in_grid',
-        'is_filterable_in_grid',
-        'search_weight',
-        'label',
-        'store_label',
-        'attribute_options',
-        'storeview_options',
-        'swatch_options',
-        'swatch_text_options',
-        'update_product_preview_image',
-        'use_product_image_for_swatch',
+        'backend_type',
+        'backend_model',
+        'source_model',
+        'validate_rules',
+        'attribute_set_id',
+        'attribute_group_id',
 
     ];
 
@@ -183,62 +157,33 @@ class CustomAttributes extends AbstractEntity
      */
     public function validateRow(array $rowData, $rowNum): bool
     {
-        
-        $attribute_code= $rowData['attribute_code'] ?? '';
-        $attribute_set_name = $rowData['attribute_set_name'] ?? '';
-        $attribute_group = $rowData['attribute_group'] ?? '';
-        $frontend_input = $rowData['frontend_input'] ?? '';
-        $frontend_class = (int)($rowData['frontend_class'] ?? 0);
-        $is_required = (int)($rowData['is_required'] ?? 0);
-        $default_value = $rowData['default_value'] ?? '';
-        $is_unique = (int)($rowData['is_unique'] ?? 0);
-        $note = $rowData['note'] ?? '';
-        $attribute_scope = (int)($rowData['attribute_scope'] ?? 0);
-        $is_visible = (int)($rowData['is_visible'] ?? 0);
-        $is_searchable = (int)($rowData['is_searchable'] ?? 0);
-        $is_filterable = (int)($rowData['is_filterable'] ?? 0);
-        $is_comparable = (int)($rowData['is_comparable'] ?? 0);
-        $is_visible_on_front = (int)($rowData['is_visible_on_front'] ?? 0);
-        $is_html_allowed_on_front = (int)($rowData['is_html_allowed_on_front'] ?? 0);
-        $is_used_for_price_rules = (int)($rowData['is_used_for_price_rules'] ?? 0);
-        $is_filterable_in_search = (int)($rowData['is_filterable_in_search'] ?? 0);
-        $used_in_product_listing = (int)($rowData['used_in_product_listing'] ?? 0);
-        $used_for_sort_by = (int)($rowData['used_for_sort_by'] ?? 0);
-        $is_visible_in_advanced_search = (int)($rowData['is_visible_in_advanced_search'] ?? 0);
-        $position = (int)($rowData['position'] ?? 0);
-        $is_wysiwyg_enabled = (int)($rowData['is_wysiwyg_enabled'] ?? 0);
-        $is_used_for_promo_rules = (int)($rowData['is_used_for_promo_rules'] ?? 0);
-        $is_required_in_admin_store = (int)($rowData['is_required_in_admin_store'] ?? 0);
-        $is_used_in_grid = (int)($rowData['is_used_in_grid'] ?? 0);
-        $is_visible_in_grid = (int)($rowData['is_visible_in_grid'] ?? 0);
-        $is_filterable_in_grid = (int)($rowData['is_filterable_in_grid'] ?? 0);
-        $search_weight = (int)($rowData['search_weight'] ?? 0);  
-        $label = $rowData['label'] ?? '';
-        $store_label = $rowData['store_label'] ?? '';
-        $attribute_options = $rowData['attribute_options'] ?? '';
-        $storeview_options = $rowData['storeview_options'] ?? '';
-        $swatch_options = $rowData['swatch_options'] ?? '';
-        $swatch_text_options = $rowData['swatch_text_options'] ?? '';
-        $update_product_preview_image = (int)($rowData['update_product_preview_image'] ?? 0); 
-        $use_product_image_for_swatch = (int)($rowData['use_product_image_for_swatch'] ?? 0); 
+
+    $attribute_code = $rowData['attribute_code'] ?? '';
+    $is_unique = (int) ($rowData['is_unique'] ?? 0);
+    $scope = (int) ($rowData['scope'] ?? 0);
+    $frontend_class = (int) ($rowData['frontend_class'] ?? 0);
+    $frontend_input = $rowData['frontend_input'] ?? '';
+    $is_required = (int) ($rowData['is_required'] ?? 0);
+    $options = $rowData['options'] ?? '';
+    $is_user_defined = (int) ($rowData['is_user_defined'] ?? 0);
+    $frontend_label = $rowData['frontend_label'] ?? '';
+    $note = $rowData['note'] ?? '';
+    $backend_type = $rowData['backend_type'] ?? '';
+    $backend_model = $rowData['backend_model'] ?? '';
+    $source_model = $rowData['source_model'] ?? '';
+    $validate_rules = $rowData['validate_rules'] ?? '';
+    $attribute_set_id = (int) ($rowData['attribute_set_id'] ?? 0);
+    $attribute_group_id = (int) ($rowData['attribute_group_id'] ?? 0);
 
         if (!$attribute_code) {
             $this->addRowError('Attribute_codeIsRequired', $rowNum);
         }
-        if (!$label) {
-            $this->addRowError('LabelIsRequired', $rowNum);
-        }
-
-        if (!$attribute_set_name) {
-            $this->addRowError('Attribute_set_nameIsRequired', $rowNum);
+        if (!$frontend_label) {
+            $this->addRowError('frontend_labelIsRequired', $rowNum);
         }
 
         if (!$frontend_input) {
-            $this->addRowError('Frontend_inputIsRequired', $rowNum);
-        }
-
-        if (!$store_label) {
-            $this->addRowError('Store_labelIsRequired', $rowNum);
+            $this->addRowError('frontend_inputIsRequired', $rowNum);
         }
 
         if (isset($this->_validatedRows[$rowNum])) {
@@ -268,6 +213,9 @@ class CustomAttributes extends AbstractEntity
                 $this->saveAndReplaceEntity();
                 break;
             case Import::BEHAVIOR_APPEND:
+                $this->saveAndReplaceEntity();
+                break;
+            default:
                 $this->saveAndReplaceEntity();
                 break;
         }

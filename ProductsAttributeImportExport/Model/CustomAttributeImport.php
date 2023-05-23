@@ -12,6 +12,8 @@ use Magento\Catalog\Model\ResourceModel\Product\Action;
 use Magento\Catalog\Model\Product\Attribute\Repository;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Api\Data\ProductAttributeInterfaceFactory;
+use Magento\Eav\Setup\EavSetupFactory;
+
 
 
 class CustomAttributeImport
@@ -27,7 +29,7 @@ class CustomAttributeImport
     private $repository;
     private $logger;
     private $productAttributeFactory;
-
+    private $eavSetupFactory;
 
     public function __construct(
         AttributeRepositoryInterface $attributeRepository,
@@ -41,6 +43,10 @@ class CustomAttributeImport
         Repository $repository,
         AttributeInterfaceFactory $attributeFactory,
         ProductAttributeInterfaceFactory $productAttributeFactory,
+        EavSetupFactory $eavSetupFactory
+
+
+
 
     ) {
         $this->attributeRepository = $attributeRepository;
@@ -54,13 +60,13 @@ class CustomAttributeImport
         $this->repository = $repository;
         $this->eavConfig = $eavConfig;
         $this->productAttributeFactory = $productAttributeFactory;
+        $this->eavSetupFactory = $eavSetupFactory;
+
     }
-    
+
     public function importAttribute($value)
     {
         $entityTypeId = $this->productFactory->create()->getResource()->getTypeId();
-        $attributeSetId = $this->attributeSetFactory->create()->getDefaultId();
-        $attributeGroupId = $this->groupFactory->create()->setAttributeSetId($attributeSetId)->getId();
         $attributeCode = $value['attribute_code'];
 
         try {
@@ -74,17 +80,31 @@ class CustomAttributeImport
         // Handle the 'label' attribute separately
         if (isset($value['label'])) {
             $attribute->setFrontendLabel($value['label']);
-            unset($value['label']); // Remove 'label' from the $value array
+            unset($value['label']);
         }
 
         foreach ($value as $key => $data) {
             $attribute->setData($key, $data);
         }
 
-        $attribute->setIsUserDefined(true);
+        // $attribute->setIsUserDefined(true);
 
         try {
             $this->attributeRepository->save($attribute);
+
+            $attributeSetId = $value['attribute_set_id'];
+            $attributeGroupId = $value['attribute_group_id'];
+            $eavSetup = $this->eavSetupFactory->create();
+
+            $eavSetup->addAttributeToSet(
+                'catalog_product',
+                $attributeSetId,
+                $attributeGroupId,
+                $attributeCode,
+                $sortOrder = null
+            );
+
+
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage());
         }
@@ -107,6 +127,5 @@ class CustomAttributeImport
             return false;
         }
     }
-
 
 }
