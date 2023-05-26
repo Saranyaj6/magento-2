@@ -1,0 +1,21 @@
+Create a table with the following columns 
+
+
+CREATE TABLE custom_product_attribute (
+    attribute_code VARCHAR(255) PRIMARY KEY,
+    is_unique INT,
+    scope VARCHAR(255),
+    frontend_class VARCHAR(255),
+    frontend_input VARCHAR(255),
+    is_required INT,
+    options VARCHAR(255),
+    is_user_defined INT,
+    frontend_label VARCHAR(255),
+    note VARCHAR(255),
+    backend_type VARCHAR(255),
+    backend_model VARCHAR(255),
+    source_model VARCHAR(255),
+    validate_rules VARCHAR(255),
+    attribute_set_id INT,
+    attribute_group_id INT
+);
